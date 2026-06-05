@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📚 English Quiz Practice</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
+
+  :root {
+    --bg: #0f1923;
+    --card: #1a2840;
+    --card2: #1e304d;
+    --accent: #f7c948;
+    --accent2: #4ecdc4;
+    --accent3: #ff6b6b;
+    --green: #51cf66;
+    --red: #ff6b6b;
+    --text: #e8f4f8;
+    --muted: #7a9bb5;
+    --border: #2a4060;
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  /* ── HOME ── */
+  #home {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 30px;
+  }
+
+  .app-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.8rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-shadow: 0 0 30px rgba(247,201,72,0.4);
+    margin-bottom: 6px;
+  }
+  .app-sub {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+
+  .section-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .section-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 14px;
+    cursor: pointer;
+    transition: all .2s;
+    text-align: left;
+  }
+  .section-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(247,201,72,0.15);
+  }
+  .section-card.selected {
+    border-color: var(--accent);
+    background: #2a3f60;
+  }
+  .sc-title {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .sc-count {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .sc-check {
+    float: right;
+    color: var(--green);
+    font-size: 1.2rem;
+    display: none;
+  }
+  .section-card.selected .sc-check { display: inline; }
+  .section-card.special-card { border-color: #ff9f43; background: linear-gradient(135deg, #1a2840, #2a1f10); }
+  .section-card.special-card .sc-title { color: #ff9f43; }
+  .section-card.special-card:hover { border-color: #ffd32a; box-shadow: 0 8px 24px rgba(255,159,67,0.25); }
+  .section-card.special-card.selected { border-color: #ffd32a; background: linear-gradient(135deg,#2a2510,#2a1f10); }
+  .section-card.oral-card { border-color: #a78bfa; background: linear-gradient(135deg, #1a2840, #1a1030); }
+  .section-card.oral-card .sc-title { color: #a78bfa; }
+  .section-card.oral-card:hover { border-color: #c4b5fd; box-shadow: 0 8px 24px rgba(167,139,250,0.25); }
+  .section-card.oral-card.selected { border-color: #c4b5fd; background: linear-gradient(135deg,#221840,#1a1030); }
+  .note-box { margin-top: 12px; padding: 10px 14px; background: rgba(255,159,67,0.1); border: 1.5px solid rgba(255,159,67,0.35); border-radius: 10px; font-size: 0.82rem; color: #ffd32a; line-height: 1.5; display: none; }
+  .note-box.show { display: block; }
+
+  .start-btn {
+    width: 100%;
+    padding: 16px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+    background: var(--accent);
+    color: #1a1a1a;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all .2s;
+    box-shadow: 0 4px 20px rgba(247,201,72,0.3);
+  }
+  .start-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(247,201,72,0.45); }
+  .start-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+  .select-all-btn {
+    background: none;
+    border: 2px solid var(--accent2);
+    color: var(--accent2);
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 18px;
+    font-size: 0.9rem;
+    transition: all .2s;
+  }
+  .select-all-btn:hover { background: rgba(78,205,196,0.1); }
+
+  /* ── QUIZ ── */
+  #quiz { max-width: 680px; margin: 0 auto; display: none; }
+
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .back-btn {
+    background: var(--card);
+    border: 2px solid var(--border);
+    color: var(--muted);
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all .2s;
+  }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .progress-wrap { flex: 1; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .progress-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 99px;
+    transition: width .4s ease;
+  }
+  .score-badge {
+    font-weight: 800;
+    font-size: 0.9rem;
+    background: var(--card);
+    border: 2px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+
+  .question-card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 16px;
+    animation: fadeUp .3s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(12px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  .q-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 99px;
+    margin-bottom: 12px;
+  }
+  .tag-mc { background: rgba(78,205,196,0.15); color: var(--accent2); }
+  .tag-tf { background: rgba(255,107,107,0.15); color: var(--red); }
+  .tag-fill { background: rgba(247,201,72,0.15); color: var(--accent); }
+  .tag-spell { background: rgba(130,80,255,0.15); color: #a78bfa; }
+  .tag-oral { background: rgba(167,139,250,0.2); color: #c4b5fd; border: 1px solid rgba(167,139,250,0.3); }
+
+  .q-text {
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.55;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .q-context {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+
+  /* MC options */
+  .options-grid {
+    display: grid;
+    gap: 10px;
+  }
+  .option-btn {
+    width: 100%;
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--card2);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--accent2);
+    background: rgba(78,205,196,0.08);
+  }
+  .option-btn.correct {
+    border-color: var(--green);
+    background: rgba(81,207,102,0.12);
+    color: var(--green);
+  }
+  .option-btn.wrong {
+    border-color: var(--red);
+    background: rgba(255,107,107,0.12);
+    color: var(--red);
+  }
+  .opt-letter {
+    min-width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* TF */
+  .tf-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* Fill / Spell */
+  .fill-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--card2);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    outline: none;
+    transition: border .2s;
+  }
+  .fill-input:focus { border-color: var(--accent2); }
+  .fill-input.correct { border-color: var(--green); background: rgba(81,207,102,0.08); }
+  .fill-input.wrong { border-color: var(--red); background: rgba(255,107,107,0.08); }
+
+  .hint-row {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .correct-ans {
+    color: var(--green);
+    font-weight: 700;
+  }
+  .wrong-ans {
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, var(--accent2), #2ec4b6);
+    color: #0f1923;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all .2s;
+    margin-top: 4px;
+  }
+  .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 20px rgba(78,205,196,0.3); }
+  .submit-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+  .next-btn {
+    width: 100%;
+    padding: 14px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    background: var(--accent);
+    color: #1a1a1a;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all .2s;
+    margin-top: 10px;
+    box-shadow: 0 4px 20px rgba(247,201,72,0.25);
+  }
+  .next-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(247,201,72,0.4); }
+
+  .feedback-box {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-top: 14px;
+    display: none;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.ok { background: rgba(81,207,102,0.12); color: var(--green); border: 1.5px solid rgba(81,207,102,0.3); }
+  .feedback-box.nope { background: rgba(255,107,107,0.12); color: var(--red); border: 1.5px solid rgba(255,107,107,0.3); }
+
+  /* ── RESULTS ── */
+  #results { max-width: 580px; margin: 0 auto; display: none; text-align: center; }
+  .result-ring {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: conic-gradient(var(--green) 0%, var(--border) 0%);
+    display: flex; align-items: center; justify-content: center;
+    margin: 20px auto 24px;
+    position: relative;
+    box-shadow: 0 0 40px rgba(81,207,102,0.25);
+  }
+  .result-ring-inner {
+    width: 120px; height: 120px;
+    background: var(--bg);
+    border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .result-pct { font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: var(--text); }
+  .result-label { font-size: 0.75rem; color: var(--muted); font-weight: 700; }
+
+  .result-title { font-family: 'Fredoka One', cursive; font-size: 2rem; color: var(--accent); margin-bottom: 6px; }
+  .result-sub { color: var(--muted); margin-bottom: 24px; }
+
+  .review-list { text-align: left; margin-bottom: 24px; }
+  .review-item {
+    background: var(--card);
+    border-left: 4px solid var(--red);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .review-item.ok-item { border-color: var(--green); }
+  .ri-q { font-weight: 700; font-size: 0.9rem; color: var(--text); margin-bottom: 4px; }
+  .ri-yours { font-size: 0.8rem; color: var(--red); }
+  .ri-correct { font-size: 0.8rem; color: var(--green); font-weight: 700; }
+  .ri-ok-label { font-size: 0.8rem; color: var(--green); font-weight: 700; }
+
+  .result-btns { display: flex; gap: 12px; }
+  .result-btn {
+    flex: 1; padding: 14px;
+    font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+    border: none; border-radius: 14px; cursor: pointer; transition: all .2s;
+  }
+  .rb-retry { background: var(--accent); color: #1a1a1a; }
+  .rb-home { background: var(--card); border: 2px solid var(--border); color: var(--text); font-family: 'Fredoka One', cursive; }
+  .rb-retry:hover { transform: translateY(-2px); }
+  .rb-home:hover { border-color: var(--accent); color: var(--accent); }
+
+  .review-toggle {
+    background: none;
+    border: 2px solid var(--border);
+    color: var(--muted);
+    padding: 9px 20px;
+    border-radius: 99px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    transition: all .2s;
+  }
+  .review-toggle:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* Responsive */
+  @media(max-width: 480px) {
+    .section-grid { grid-template-columns: 1fr; }
+    .app-title { font-size: 2.1rem; }
+    .result-btns { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home">
+  <div class="app-title">📚 Quiz Practice</div>
+  <div class="app-sub">The Dinosaurs of Waterhouse Hawkins &amp; Hold the Flag High</div>
+
+  <button class="select-all-btn" onclick="toggleAll()">☑ Select / Deselect All</button>
+
+  <div class="section-grid" id="sectionGrid"></div>
+
+  <button class="start-btn" id="startBtn" onclick="startQuiz()" disabled>
+    🚀 Start Practice!
+  </button>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz">
+  <div class="quiz-header">
+    <button class="back-btn" onclick="goHome()">←</button>
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="qLabel">Question 1</span>
+        <span id="qTotal">of 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="score-badge" id="scoreBadge">✓ 0 | ✗ 0</div>
+  </div>
+
+  <div id="questionArea"></div>
+
+  <button class="submit-btn" id="submitBtn" onclick="checkAnswer()">Check Answer ✓</button>
+  <button class="next-btn" id="nextBtn" onclick="nextQuestion()" style="display:none">Next →</button>
+</div>
+
+<!-- RESULTS -->
+<div id="results">
+  <div class="result-title" id="resultEmoji">🎉 Great Job!</div>
+  <div class="result-ring" id="resultRing">
+    <div class="result-ring-inner">
+      <div class="result-pct" id="resultPct">0%</div>
+      <div class="result-label">SCORE</div>
+    </div>
+  </div>
+  <div class="result-sub" id="resultSub">You got X out of Y correct.</div>
+
+  <button class="review-toggle" onclick="toggleReview()">📋 Show Answer Review</button>
+  <div id="reviewList" class="review-list" style="display:none"></div>
+
+  <div class="result-btns">
+    <button class="result-btn rb-retry" onclick="retryQuiz()">🔁 Retry</button>
+    <button class="result-btn rb-home" onclick="goHome()">🏠 Home</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  QUESTION BANK
+// ═══════════════════════════════════════════════════════
+const SECTIONS = [
+
+  // ── WEEK 1: ANTONYMS ──────────────────────────────────
+  {
+    id: 'w1_antonyms',
+    title: 'Week 1 – Antonyms',
+    questions: [
+      { type:'mc', text:'The man <u>buried</u> the treasure on the deserted island. Write the antonym of the underlined word.', options:['Unearthed','Discovered','Hidden','Found'], answer:'Unearthed' },
+      { type:'mc', text:'The girl <u>moved towards</u> the ball during the game. Write the antonym.', options:['Moved away from','Ran alongside','Stayed near','Dodged around'], answer:'Moved away from' },
+      { type:'mc', text:'Adam <u>walked slowly</u> down the hall. Write the antonym.', options:['Hurried quickly','Ran slowly','Crawled fast','Skipped along'], answer:'Hurried quickly' },
+      { type:'mc', text:'He had a <u>lack of interest</u> in sketching pictures. Write the antonym.', options:['Passion for','Curiosity about','Enthusiasm for','Love of'], answer:'Passion for' },
+    ]
+  },
+
+  // ── WEEK 1: COMPREHENSION ─────────────────────────────
+  {
+    id: 'w1_comp',
+    title: 'Week 1 – Comprehension (Waterhouse)',
+    questions: [
+      { type:'mc', text:'Why was Waterhouse Hawkins in such a hurry to get back? (pg 396)', options:['He was late for dinner','He was expecting some very important visitors','He had to meet the Queen','He was afraid of the dark'], answer:'He was expecting some very important visitors' },
+      { type:'mc', text:'What did Waterhouse really love doing? (pg 397)', options:['Reading books about animals','Sketching and painting animals','Sculpting models of animals','Cooking meals'], answer:'Sculpting models of animals' },
+      { type:'mc', text:'What exciting project was Waterhouse busy doing? (pg 398)', options:['Painting a mural for the Queen','Building life-size dinosaur sculptures','Writing a science book with Richard Owen','Digging for fossils in a field'], answer:'Building life-size dinosaur sculptures' },
+    ]
+  },
+
+  // ── WEEK 1: VOCABULARY ────────────────────────────────
+  {
+    id: 'w1_vocab',
+    title: 'Week 1 – Vocabulary Fill-in',
+    questions: [
+      { type:'fill', text:'I was a little late, so I _____ up the stairs so I would not miss class.', answer:'hurried', hint:'Past tense of "to hurry"' },
+      { type:'fill', text:'The remains of a pre-historic plant or animal preserved in solid form is a _____.', answer:'fossil', hint:'Think of dinosaur bones in rock' },
+      { type:'fill', text:'The _____ studies the dinosaur fossils we found.', answer:'paleontologist', hint:'A scientist who studies ancient life' },
+      { type:'fill', text:'He has a real _____ for this kind of work. (paleontologist sentence)', answer:'passion', hint:'Strong love or enthusiasm' },
+      { type:'fill', text:'When something moves about in search of prey it is on the _____.', answer:'prowl', hint:'Predators do this at night' },
+      { type:'fill', text:'When the artist was finished quickly _____ a drawing, he used it to help himself when _____ a statue.', answer:'sketching / sculpting', hint:'Drawing quickly / making 3D art' },
+      { type:'fill', text:'A four-wheeled passenger vehicle pulled by horses is called a _____.', answer:'carriage', hint:'Before cars existed…' },
+      { type:'fill', text:'A Stegosaurus has large _____ all across its back.', answer:'spikes', hint:'Sharp pointed things' },
+      { type:'fill', text:'He threw a rock at me! Luckily I saw it coming and _____ it.', answer:'dodged', hint:'Moved out of the way' },
+      { type:'fill', text:'The paleontologist _____ a huge amount of dinosaur bones in a field.', answer:'unearthed', hint:'Dug up from the ground' },
+    ]
+  },
+
+  // ── WEEK 2: HOMONYMS ──────────────────────────────────
+  {
+    id: 'w2_homonyms',
+    title: 'Week 2 – Homonyms',
+    questions: [
+      { type:'mc', text:'"The wind was so strong it knocked over the tree." Which meaning of WIND is used?', options:['Moving air','To twist or coil'], answer:'Moving air' },
+      { type:'mc', text:'"She had to tear the paper to open the gift." Which meaning of TEAR is used?', options:['To rip','A drop of liquid from the eye'], answer:'To rip' },
+      { type:'mc', text:'"I will close the door after I leave." Which meaning of CLOSE is used?', options:['To shut','Near'], answer:'To shut' },
+    ]
+  },
+
+  // ── WEEK 2: COMPREHENSION ─────────────────────────────
+  {
+    id: 'w2_comp',
+    title: 'Week 2 – Comprehension (Making Dinosaurs)',
+    questions: [
+      { type:'mc', text:'What was the first step for Waterhouse making his dinosaurs? (pg 402)', options:['Making drawings of the creatures','Building iron skeletons','Pouring cement casts','Consulting a paleontologist'], answer:'Making drawings of the creatures' },
+      { type:'mc', text:'What did Waterhouse do with the help of his assistants? (pg 402)', options:['Painted the finished dinosaurs','Formed life-size clay figures and created the molds from them','Dug up fossils in a field','Mixed and poured the cement casts'], answer:'Formed life-size clay figures and created the molds from them' },
+      { type:'mc', text:'What did Waterhouse conclude about building his dinosaurs? (pg 402)', options:['It was easy because of his assistants','It was no less than building a house upon four columns','He needed more money to finish','He should have used a different method'], answer:'It was no less than building a house upon four columns' },
+    ]
+  },
+
+  // ── WEEK 2: VOCABULARY ────────────────────────────────
+  {
+    id: 'w2_vocab',
+    title: 'Week 2 – Vocabulary Fill-in',
+    questions: [
+      { type:'fill', text:'I quickly _____ up my bedroom before my friend came over.', answer:'tidied', hint:'Made neat and clean' },
+      { type:'fill', text:'A part, share or number of something compared to the whole is the _____.', answer:'proportion', hint:'Ratio or relative size' },
+      { type:'fill', text:'Then he _____ the iron skeletons and built brick _____, before covering them in cement.', answer:'erected / foundations', hint:'Set up / base supports' },
+      { type:'fill', text:'The branch of science about bodily structure of living things is called _____.', answer:'anatomy', hint:'Biology of body structure' },
+      { type:'fill', text:'I _____ started my storytelling speech. (I was worried for no reason)', answer:'nervously', hint:'With anxiety or worry' },
+      { type:'fill', text:'This is the name of a particularly large type of dinosaur _____.', answer:'iguanodon', hint:'Large plant-eating dinosaur' },
+      { type:'fill', text:'Frogs are _____, they are not mammals.', answer:'amphibians', hint:'Cold-blooded, live in water and on land' },
+      { type:'fill', text:'It was a _____ game that was being watched all around the world.', answer:'monumental', hint:'Extremely large or important' },
+    ]
+  },
+
+  // ── WEEK 3: IDIOMS ────────────────────────────────────
+  {
+    id: 'w3_idioms',
+    title: 'Week 3 – Idiom Meanings',
+    questions: [
+      { type:'mc', text:'"He barked up the wrong tree when he accused me." What does this mean?', options:['To make a wrong decision','To shout loudly'], answer:'To make a wrong decision' },
+      { type:'mc', text:'"We\'ll cross that bridge when we come to it." What does this mean?', options:['To deal with a problem when it actually happens','To cross a physical bridge'], answer:'To deal with a problem when it actually happens' },
+      { type:'mc', text:'"I can\'t believe we dropped the ball during the presentation." What does this mean?', options:['To make a mistake or fail at something','To play football'], answer:'To make a mistake or fail at something' },
+      { type:'mc', text:'"When he heard the good news, he was on cloud nine all day." What does this mean?', options:['To be high in the air','To be very happy'], answer:'To be very happy' },
+    ]
+  },
+
+  // ── WEEK 3: COMPREHENSION ─────────────────────────────
+  {
+    id: 'w3_comp',
+    title: 'Week 3 – Comprehension (The Dinner)',
+    questions: [
+      { type:'mc', text:'What did Waterhouse do with great anticipation?', options:['He wrote invitations to a famous dinner inside the iguanodon mold','He sculpted a new dinosaur','He presented at a museum','He traveled to America'], answer:'He wrote invitations to a famous dinner inside the iguanodon mold' },
+      { type:'mc', text:'What did Waterhouse\'s guests do for eight hours? (pg 407)', options:['Danced and sang','Ate, drank and talked about dinosaurs enthusiastically','Watched a play','Painted the dinosaurs'], answer:'Ate, drank and talked about dinosaurs enthusiastically' },
+      { type:'mc', text:'What were the guests doing by midnight?', options:['Sleeping','Still celebrating and enjoying the party','Cleaning up','Walking home'], answer:'Still celebrating and enjoying the party' },
+    ]
+  },
+
+  // ── WEEK 3: VOCABULARY ────────────────────────────────
+  {
+    id: 'w3_vocab',
+    title: 'Week 3 – Vocabulary Fill-in',
+    questions: [
+      { type:'fill', text:'Santa Claus _____ that heavy sack around behind him all night.', answer:'hauled', hint:'Pulled/dragged with effort' },
+      { type:'fill', text:'A winged dinosaur seen sketched on the invitations is a _____.', answer:'pterodactyl', hint:'Flying prehistoric reptile' },
+      { type:'fill', text:'The _____ loved the new play and he _____ in their approval and positive words.', answer:'critics / basked', hint:'Reviewers / enjoyed warmly' },
+      { type:'fill', text:'Everyone waited with great _____ to find out how the story would end in part 2.', answer:'anticipation', hint:'Excited expectation' },
+      { type:'fill', text:'The judge spoke in a _____ voice when he told the man he was guilty.', answer:'solemn', hint:'Serious and dignified' },
+      { type:'fill', text:'I walked into the _____ dining hall; they even had seafood _____ with full lobsters!', answer:'lavish / platters', hint:'Extravagant / large serving dishes' },
+      { type:'fill', text:'A prince or top scientist would be described as _____ as they are famous and respected.', answer:'eminent', hint:'Famous and respected' },
+      { type:'fill', text:'I enjoy greeting guests but my sister describes it as just a _____.', answer:'formality', hint:'A routine done out of politeness' },
+    ]
+  },
+
+  // ── WEEK 4: TRUE / FALSE ──────────────────────────────
+  {
+    id: 'w4_tf',
+    title: 'Week 4 – True or False',
+    questions: [
+      { type:'tf', text:'Waterhouse signed the iguanodon on the lower jaw.', answer:'True' },
+      { type:'tf', text:'Forty thousand spectators attended the ceremony. (pg 408)', answer:'True' },
+      { type:'tf', text:'Waterhouse mingled with foreign scientists and top dignitaries. (pg 408)', answer:'True' },
+      { type:'tf', text:'Waterhouse went to the lake to wait for the crowd. (pg 409)', answer:'True' },
+      { type:'tf', text:'The crowds laughed and cried when they saw the dinosaurs. (pg 409)', answer:'True' },
+      { type:'tf', text:'Waterhouse traveled to the United States in 1868. (Afterword)', answer:'True' },
+    ]
+  },
+
+  // ── WEEK 4: COMPREHENSION ─────────────────────────────
+  {
+    id: 'w4_comp',
+    title: 'Week 4 – Comprehension (Legacy)',
+    questions: [
+      { type:'mc', text:'What did Waterhouse do in 1868? (pg 411)', options:['He built new dinosaurs in London','He traveled to the United States to build more dinosaurs','He wrote a book about dinosaurs','He retired from sculpting'], answer:'He traveled to the United States to build more dinosaurs' },
+      { type:'mc', text:'What did vandals do to Waterhouse\'s work?', options:['They painted over it','They smashed and destroyed the dinosaurs','They stole pieces of the sculptures','They buried them underground'], answer:'They smashed and destroyed the dinosaurs' },
+      { type:'mc', text:'Where are the dinosaurs buried?', options:['In a museum basement','Under the lake in Central Park, New York','In a field in London','In Waterhouse\'s studio'], answer:'Under the lake in Central Park, New York' },
+    ]
+  },
+
+  // ── WEEK 4: VOCABULARY ────────────────────────────────
+  {
+    id: 'w4_vocab',
+    title: 'Week 4 – Vocabulary Fill-in',
+    questions: [
+      { type:'fill', text:'I went to Hannah\'s party and I _____ with many people I hadn\'t met before.', answer:'mingled', hint:'Mixed and chatted socially' },
+      { type:'fill', text:'I brought _____ donuts with me, so I had enough to share.', answer:'a dozen', hint:'Twelve of something' },
+      { type:'fill', text:'"I want people to describe me as looking _____," he said as he looked for his King costume.', answer:'regal', hint:'Like a king or queen; royal-looking' },
+      { type:'fill', text:'A building material made from broken stone, sand, cement and water is _____.', answer:'concrete', hint:'Used to build roads and buildings' },
+      { type:'fill', text:'_____ had damaged the statue and we needed to have it fixed.', answer:'Vandals', hint:'People who deliberately destroy things' },
+      { type:'fill', text:'There were many _____ in the arena who could not believe what they witnessed.', answer:'spectators', hint:'People watching an event' },
+      { type:'fill', text:'People important because of high rank or office are _____, e.g. generals or royals.', answer:'dignitaries', hint:'VIPs; important officials' },
+    ]
+  },
+
+  // ── FLAG: WEEK 2 CROSSWORD / VOCAB ────────────────────
+  {
+    id: 'flag_w2_vocab',
+    title: 'Flag – Week 2 Vocabulary (Crossword)',
+    questions: [
+      { type:'mc', text:'DOWN 1: To get off a horse', options:['Dismount','Unhorse','Alight','Descend'], answer:'Dismount' },
+      { type:'mc', text:'DOWN 2: An adult male horse', options:['Stallion','Gelding','Mare','Colt'], answer:'Stallion' },
+      { type:'mc', text:'DOWN 3: A building/buildings made to be defended', options:['Fortress','Palace','Barracks','Castle'], answer:'Fortress' },
+      { type:'mc', text:'DOWN 4: Soldiers on foot', options:['Infantry','Cavalry','Artillery','Marines'], answer:'Infantry' },
+      { type:'mc', text:'ACROSS 2: Metal points worn on boots to direct a horse (5 letters — appears in the story pg 213)', options:['Spurs','Bridle','Reins','Saddle'], answer:'Spurs' },
+      { type:'mc', text:'ACROSS 5: A rank higher than a private — Carney held this rank (8 letters)', options:['Sergeant','Corporal','Lieutenant','Captain'], answer:'Sergeant' },
+    ]
+  },
+
+  // ── FLAG: WEEK 2 PASSAGE COMP ─────────────────────────
+  {
+    id: 'flag_w2_comp',
+    title: 'Flag – Week 2 Passage Comprehension',
+    questions: [
+      { type:'mc', text:'Where was the sharpshooter?', options:['Behind the crumbling wall of the fortress','In the open field','On top of the fort wall','Behind a tree'], answer:'Behind the crumbling wall of the fortress' },
+      { type:'mc', text:'Why was the ground shaking?', options:['An earthquake','A shell exploded nearby','Cavalry charging','Cannons firing from the fort'], answer:'A shell exploded nearby' },
+      { type:'mc', text:'How did the infantry move?', options:['They charged quickly','They retreated','They advanced cautiously','They marched in formation'], answer:'They advanced cautiously' },
+      { type:'tf', text:'TRUE or FALSE: The Fifty-Fourth woke up when the sun rose.', answer:'False' },
+      { type:'tf', text:'TRUE or FALSE: The soldiers made sure their bayonets were sharp.', answer:'True' },
+      { type:'tf', text:'TRUE or FALSE: A color bearer was not respected by the other soldiers.', answer:'False' },
+      { type:'tf', text:'TRUE or FALSE: Commander Shaw rode a black horse.', answer:'False' },
+      { type:'tf', text:'TRUE or FALSE: Commander Shaw sounded afraid in his speech.', answer:'False' },
+      { type:'tf', text:'TRUE or FALSE: Ned was injured when a shell exploded.', answer:'False' },
+    ]
+  },
+
+  // ── FLAG: WEEK 3 VOCABULARY ───────────────────────────
+  {
+    id: 'flag_w3_vocab',
+    title: 'Flag – Week 3 Vocabulary',
+    questions: [
+      { type:'fill', text:'An action that shows respect for someone _____.', answer:'tribute', hint:'Honor paid to someone' },
+      { type:'fill', text:'You have been beaten, you lost the battle: the soldiers struggled away _____.', answer:'defeated', hint:'Having lost the fight' },
+      { type:'fill', text:'You have won the battle. This is called a _____.', answer:'victory', hint:'Opposite of defeat' },
+      { type:'fill', text:'To tell someone they did a good job: They _____ Carney because he helped defeat the enemy.', answer:'congratulated', hint:'To praise someone\'s success' },
+      { type:'fill', text:'Carney carried the flag safely back before he _____.', answer:'collapsed', hint:'Fell down due to injury/exhaustion' },
+    ]
+  },
+
+  // ── FLAG: WEEK 3 CHARACTER STUDY ──────────────────────
+  {
+    id: 'flag_w3_char',
+    title: 'Flag – Week 3 Character Study (Carney / Ned)',
+    questions: [
+      { type:'mc', text:'A. "He was the drummer for the 54th regiment." — Carney, Ned, or Both?', options:['Carney','Ned','Both'], answer:'Ned' },
+      { type:'mc', text:'B. "A shell exploded next to him, but luckily he was uninjured." — Carney, Ned, or Both?', options:['Carney','Ned','Both'], answer:'Ned' },
+      { type:'mc', text:'C. "He was shot three times and collapsed onto the ground." — Carney, Ned, or Both?', options:['Carney','Ned','Both'], answer:'Carney' },
+      { type:'mc', text:'D. "He carried the flag safely behind Union lines." — Carney, Ned, or Both?', options:['Carney','Ned','Both'], answer:'Carney' },
+      { type:'mc', text:'E. "They played an important role in the battle." — Carney, Ned, or Both?', options:['Carney','Ned','Both'], answer:'Both' },
+      { type:'mc', text:'F. "He was awarded a Medal of Honor for his bravery." — Carney, Ned, or Both?', options:['Carney','Ned','Both'], answer:'Carney' },
+      { type:'mc', text:'G. "He and the other soldiers congratulated Carney." — Carney, Ned, or Both?', options:['Carney','Ned','Both'], answer:'Ned' },
+    ]
+  },
+
+  // ── FLAG: WEEK 3 SEQUENCING ───────────────────────────
+  {
+    id: 'flag_w3_seq',
+    title: 'Flag – Week 3 Sequencing (Carney\'s Story)',
+    questions: [
+      { type:'mc', text:'Which happened FIRST in Carney\'s story?', options:['He carried the flag behind Union lines','They went into battle following Shaw','Before the battle he told Ned what to do','He felt a bullet tear through his flesh'], answer:'Before the battle he told Ned what to do' },
+      { type:'mc', text:'Which happened SECOND?', options:['He carried the flag behind Union lines','They went into battle following Shaw','Before the battle he told Ned what to do','He felt a bullet tear through his flesh'], answer:'They went into battle following Shaw' },
+      { type:'mc', text:'Which happened THIRD?', options:['He carried the flag behind Union lines','The soldier ahead dropped the flag, Carney picked it up','He felt a bullet tear through his flesh','He lifted the banner and two more shots hit him'], answer:'The soldier ahead dropped the flag, Carney picked it up' },
+      { type:'mc', text:'Which happened FOURTH?', options:['He carried the flag behind Union lines','He lifted the banner and two more shots hit him','He felt a bullet tear through his flesh','He told Ned what to do'], answer:'He felt a bullet tear through his flesh' },
+      { type:'mc', text:'Which happened FIFTH?', options:['He carried the flag behind Union lines','He lifted the banner and two more shots hit him','They went into battle','He told Ned what to do'], answer:'He lifted the banner and two more shots hit him' },
+      { type:'mc', text:'Which happened LAST?', options:['He carried the flag behind Union lines','He lifted the banner and two more shots hit him','They went into battle','He felt a bullet tear through him'], answer:'He carried the flag behind Union lines' },
+    ]
+  },
+
+  // ── FLAG: WEEK 3 COMPREHENSION ────────────────────────
+  {
+    id: 'flag_w3_comp',
+    title: 'Flag – Week 3 Final Comprehension',
+    questions: [
+      { type:'mc', text:'Who raised the flag over Fort Wagner\'s ramparts?', options:['Commander Shaw','William H. Carney','Ned','A Union officer'], answer:'William H. Carney' },
+      { type:'mc', text:'What would the survivors of the battle of Fort Wagner never forget?', options:['The date of the battle','Carney\'s bravery in carrying the flag despite being wounded','The number of soldiers who died','Commander Shaw\'s speech'], answer:'Carney\'s bravery in carrying the flag despite being wounded' },
+      { type:'mc', text:'How was Colonel Robert Gould Shaw honored? (pg 219)', options:['He was given a statue in Boston','His body was buried with his men as a tribute to his leadership','He was awarded the Medal of Honor','He was given a hero\'s welcome in Washington'], answer:'His body was buried with his men as a tribute to his leadership' },
+      { type:'mc', text:'How was William H. Carney honored? (pg 219)', options:['He received a cash prize','He was given the Medal of Honor — the first African American to earn it','He became a general','He was honored with a statue'], answer:'He was given the Medal of Honor — the first African American to earn it' },
+    ]
+  },
+
+  // ── 🎤 ORAL PRACTICE – Waterhouse ────────────────────
+  {
+    id: 'oral_waterhouse',
+    title: '🎤 Oral Practice – Waterhouse Hawkins',
+    oral: true,
+    questions: [
+      { type:'mc', text:'[ORAL] Who was Benjamin Waterhouse Hawkins and what was he famous for?', options:['A scientist who discovered dinosaur fossils','An artist who built the first life-size dinosaur sculptures in 1853 London','A paleontologist who wrote books about dinosaurs','A builder who designed the Crystal Palace'], answer:'An artist who built the first life-size dinosaur sculptures in 1853 London' },
+      { type:'mc', text:'[ORAL] How did Waterhouse figure out what the dinosaurs looked like, when only fossil fragments existed?', options:['He guessed based on drawings in books','He compared fossil pieces to living animals and worked with scientist Richard Owen','He dug up complete skeletons','He used photographs from museums'], answer:'He compared fossil pieces to living animals and worked with scientist Richard Owen' },
+      { type:'mc', text:'[ORAL] Describe the process Waterhouse used to build his dinosaurs. What were the six steps shown on pg 402–403?', options:['Sketch → small clay model → life-size clay model → mold → iron skeleton → finished dinosaur covered in cement','Dig bones → clean bones → measure → draw → sculpt → paint','Buy materials → hire workers → build frame → add clay → paint → display','Design → dig foundation → pour concrete → add iron → cover in plaster → open to public'], answer:'Sketch → small clay model → life-size clay model → mold → iron skeleton → finished dinosaur covered in cement' },
+      { type:'mc', text:'[ORAL] Why did Waterhouse host a dinner party inside the iguanodon mold on New Year\'s Eve?', options:['He wanted to celebrate finishing the dinosaur','He wanted to impress England\'s leading scientists and show off his masterpiece with style','He had no other venue for the party','The Queen invited him to host it'], answer:'He wanted to impress England\'s leading scientists and show off his masterpiece with style' },
+      { type:'mc', text:'[ORAL] What happened to Waterhouse\'s dinosaur models in New York City?', options:['They were donated to a museum','Vandals broke into his workshop, smashed the models to pieces, and buried them in Central Park','They were shipped back to London','They were destroyed in a fire'], answer:'Vandals broke into his workshop, smashed the models to pieces, and buried them in Central Park' },
+      { type:'mc', text:'[ORAL] What is the theme or message of the story "The Dinosaurs of Waterhouse Hawkins"?', options:['Money is needed to become a great artist','Science is more important than art','Passion, hard work and creativity can bring the past to life for everyone','Building things is always very difficult'], answer:'Passion, hard work and creativity can bring the past to life for everyone' },
+      { type:'mc', text:'[ORAL] What does Waterhouse mean when he says building the dinosaurs is "no less than building a house upon four columns"?', options:['The dinosaurs were made of bricks like a house','It was an enormous and complicated structural task, not just art','He used the same workers who built houses','The dinosaurs had four legs like the columns of a house'], answer:'It was an enormous and complicated structural task, not just art' },
+    ]
+  },
+
+  // ── 🎤 ORAL PRACTICE – Hold the Flag High ─────────────
+  {
+    id: 'oral_flag',
+    title: '🎤 Oral Practice – Hold the Flag High',
+    oral: true,
+    questions: [
+      { type:'mc', text:'[ORAL] Who was William H. Carney and why is he important in American history?', options:['He was a general who won the Civil War','He was an African American sergeant in the 54th Regiment who heroically carried the flag at Fort Wagner and became the first African American to earn the Congressional Medal of Honor','He was the commander of Fort Wagner','He was a drummer boy who survived the battle'], answer:'He was an African American sergeant in the 54th Regiment who heroically carried the flag at Fort Wagner and became the first African American to earn the Congressional Medal of Honor' },
+      { type:'mc', text:'[ORAL] What was the Massachusetts Fifty-Fourth Regiment and why was it significant?', options:['A regiment of experienced white soldiers from Massachusetts','One of the first African American regiments in the Union Army, formed in spring 1863','A Confederate regiment that defended Fort Wagner','A regiment of volunteers who had never fought before'], answer:'One of the first African American regiments in the Union Army, formed in spring 1863' },
+      { type:'mc', text:'[ORAL] Describe what Carney did during the battle of Fort Wagner that showed his courage.', options:['He led the charge against the fort and defeated the Confederates','When the flag bearer was shot dead, Carney, already wounded, caught the falling flag and carried it forward despite being shot two more times, refusing to let it touch the ground','He rescued Ned from the battlefield under heavy fire','He charged the fort alone and opened the gates for his regiment'], answer:'When the flag bearer was shot dead, Carney, already wounded, caught the falling flag and carried it forward despite being shot two more times, refusing to let it touch the ground' },
+      { type:'mc', text:'[ORAL] What was the result of the Battle of Fort Wagner for the Union soldiers?', options:['The Union won and captured Fort Wagner','Confederate troops held their position and declared victory — the Union soldiers were defeated','The battle ended in a draw','Both sides retreated without a winner'], answer:'Confederate troops held their position and declared victory — the Union soldiers were defeated' },
+      { type:'mc', text:'[ORAL] What did Carney say when his fellow soldiers congratulated him after the battle?', options:['"I am proud to serve my country."','"The flag must always fly high."','"The old flag never touched the ground."','"We fought bravely but were defeated."'], answer:'"The old flag never touched the ground."' },
+      { type:'mc', text:'[ORAL] Why was Ned, the drummer boy, included in the story? What purpose does he serve?', options:['He was Carney\'s best friend and needed to be honored','As a young boy, Ned helps readers understand the events through a child\'s eyes, making the story more personal and emotional','He carried the flag with Carney','He was the only survivor of the battle'], answer:'As a young boy, Ned helps readers understand the events through a child\'s eyes, making the story more personal and emotional' },
+      { type:'mc', text:'[ORAL] How were Colonel Robert Gould Shaw and William H. Carney each honored after the war?', options:['Both received the Congressional Medal of Honor','Shaw was buried with his men and honored with a bronze memorial; Carney was awarded the Congressional Medal of Honor — first African American to earn it','Both were given statues in Washington D.C.','Shaw was made a general; Carney was promoted to colonel'], answer:'Shaw was buried with his men and honored with a bronze memorial; Carney was awarded the Congressional Medal of Honor — first African American to earn it' },
+    ]
+  },
+
+  // ── ⭐ HOWARD'S MISTAKES (2 confirmed errors) ─────────
+  {
+    id: 'howard_mistakes',
+    title: '⭐ Howard\'s Mistakes (2)',
+    special: true,
+    questions: [
+      {
+        type:'mc',
+        text:'Week 3 Vocab: "The _____ loved the new play he had written and he _____ in their approval and positive words."',
+        options:['critics / basked','formality / basked','critics / eminent','lavish / solemn'],
+        answer:'critics / basked',
+        note:'Howard wrote "formality" in the first blank. FORMALITY means a routine done out of politeness. CRITICS are reviewers/journalists who write opinions about performances and art.'
+      },
+      {
+        type:'mc',
+        text:'Week 3 Vocab: "I really enjoy greeting our guests but my sister describes it as being just a _____."',
+        options:['formality','critics','anticipation','eminent'],
+        answer:'formality',
+        note:'Howard wrote "critics" here — critics are people who review/judge work. FORMALITY means something done as a polite social convention. Greeting guests can feel like a routine formality.'
+      },
+    ]
+  },
+
+]; // end SECTIONS
+
+// ═══════════════════════════════════════════════════════
+//  APP STATE
+// ═══════════════════════════════════════════════════════
+let selectedSections = new Set();
+let quizQuestions = [];
+let currentIdx = 0;
+let score = 0;
+let wrong = 0;
+let answers = []; // {q, userAns, correct, isOk}
+let answered = false;
+let lastQuestions = [];
+
+// ═══════════════════════════════════════════════════════
+//  HOME
+// ═══════════════════════════════════════════════════════
+function buildHome() {
+  const grid = document.getElementById('sectionGrid');
+  grid.innerHTML = '';
+  SECTIONS.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'section-card' + (s.special ? ' special-card' : '') + (s.oral ? ' oral-card' : '') + (selectedSections.has(s.id) ? ' selected' : '');
+    div.onclick = () => toggleSection(s.id, div);
+    div.innerHTML = `
+      <div class="sc-title">${s.title} <span class="sc-check">✓</span></div>
+      <div class="sc-count">${s.questions.length} questions</div>
+    `;
+    grid.appendChild(div);
+  });
+  updateStartBtn();
+}
+
+function toggleSection(id, el) {
+  if (selectedSections.has(id)) selectedSections.delete(id);
+  else selectedSections.add(id);
+  el.classList.toggle('selected');
+  el.querySelector('.sc-check').style.display = selectedSections.has(id) ? 'inline' : 'none';
+  updateStartBtn();
+}
+
+function toggleAll() {
+  if (selectedSections.size === SECTIONS.length) {
+    selectedSections.clear();
+  } else {
+    SECTIONS.forEach(s => selectedSections.add(s.id));
+  }
+  buildHome();
+}
+
+function updateStartBtn() {
+  document.getElementById('startBtn').disabled = selectedSections.size === 0;
+}
+
+// ═══════════════════════════════════════════════════════
+//  QUIZ
+// ═══════════════════════════════════════════════════════
+function startQuiz() {
+  quizQuestions = [];
+  SECTIONS.forEach(s => {
+    if (selectedSections.has(s.id)) {
+      quizQuestions.push(...s.questions.map(q => ({...q, section: s.title})));
+    }
+  });
+  // shuffle
+  for (let i = quizQuestions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [quizQuestions[i], quizQuestions[j]] = [quizQuestions[j], quizQuestions[i]];
+  }
+  lastQuestions = [...quizQuestions];
+  currentIdx = 0; score = 0; wrong = 0; answers = [];
+  show('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = quizQuestions[currentIdx];
+  const total = quizQuestions.length;
+
+  document.getElementById('qLabel').textContent = `Question ${currentIdx + 1}`;
+  document.getElementById('qTotal').textContent = `of ${total}`;
+  document.getElementById('progressFill').style.width = `${(currentIdx / total) * 100}%`;
+  document.getElementById('scoreBadge').textContent = `✓ ${score} | ✗ ${wrong}`;
+  document.getElementById('submitBtn').style.display = 'block';
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('nextBtn').style.display = 'none';
+
+  const area = document.getElementById('questionArea');
+  area.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.className = 'question-card';
+
+  let tagClass = '', tagLabel = '';
+  if (q.type === 'mc' && q.text.startsWith('[ORAL]')) { tagClass = 'tag-oral'; tagLabel = '🎤 Oral Practice'; }
+  else if (q.type === 'mc') { tagClass = 'tag-mc'; tagLabel = 'Multiple Choice'; }
+  else if (q.type === 'tf') { tagClass = 'tag-tf'; tagLabel = 'True / False'; }
+  else if (q.type === 'fill') { tagClass = 'tag-fill'; tagLabel = 'Fill in the Blank'; }
+
+  // Clean [ORAL] prefix from display text
+  const displayText = q.text.replace(/^\[ORAL\]\s*/, '');
+
+  card.innerHTML = `<span class="q-tag ${tagClass}">${tagLabel}</span>
+    <div class="q-text">${displayText}</div>
+    ${q.hint ? `<div class="q-context">Hint: ${q.hint}</div>` : ''}
+    <div id="inputArea"></div>
+    <div class="feedback-box" id="feedbackBox"></div>`;
+
+  area.appendChild(card);
+
+  const inp = document.getElementById('inputArea');
+
+  if (q.type === 'mc') {
+    const opts = [...q.options].sort(() => Math.random() - 0.5);
+    const letters = ['A','B','C','D'];
+    inp.className = 'options-grid';
+    opts.forEach((o, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.dataset.val = o;
+      btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${o}`;
+      btn.onclick = () => selectOption(btn, opts);
+      inp.appendChild(btn);
+    });
+  } else if (q.type === 'tf') {
+    inp.className = 'tf-row';
+    ['True','False'].forEach(v => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.dataset.val = v;
+      btn.innerHTML = `<span class="opt-letter">${v[0]}</span>${v}`;
+      btn.onclick = () => selectOption(btn, ['True','False']);
+      inp.appendChild(btn);
+    });
+  } else if (q.type === 'fill') {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<input class="fill-input" id="fillInput" type="text" placeholder="Type your answer…" autocomplete="off" autocorrect="off" spellcheck="false">`;
+    inp.appendChild(wrap);
+    const fi = document.getElementById('fillInput');
+    fi.addEventListener('keydown', e => { if(e.key==='Enter' && !answered) checkAnswer(); });
+    setTimeout(() => fi.focus(), 100);
+  }
+}
+
+function selectOption(btn, all) {
+  if (answered) return;
+  document.querySelectorAll('.option-btn').forEach(b => {
+    b.style.borderColor = '';
+    b.querySelector('.opt-letter').style.background = '';
+  });
+  btn.style.borderColor = 'var(--accent2)';
+  btn.querySelector('.opt-letter').style.background = 'rgba(78,205,196,0.3)';
+  btn.dataset.selected = 'true';
+  document.querySelectorAll('.option-btn').forEach(b => { if(b!==btn) delete b.dataset.selected; });
+}
+
+function checkAnswer() {
+  if (answered) return;
+  const q = quizQuestions[currentIdx];
+  let userAns = '';
+
+  if (q.type === 'mc' || q.type === 'tf') {
+    const sel = document.querySelector('.option-btn[data-selected="true"]');
+    if (!sel) { showFeedback('Please select an answer!', 'nope'); return; }
+    userAns = sel.dataset.val;
+  } else {
+    const fi = document.getElementById('fillInput');
+    userAns = fi.value.trim();
+    if (!userAns) { showFeedback('Please type your answer!', 'nope'); fi.focus(); return; }
+  }
+
+  answered = true;
+  const correctAns = q.answer;
+  // flexible matching for fill
+  const isOk = q.type === 'fill'
+    ? normalizeAns(userAns) === normalizeAns(correctAns) ||
+      correctAns.split('/').map(a=>normalizeAns(a.trim())).some(a => normalizeAns(userAns).includes(a))
+    : userAns === correctAns;
+
+  if (isOk) score++; else wrong++;
+  answers.push({ q: q.text, section: q.section, userAns, correctAns, isOk });
+
+  if (q.type === 'mc' || q.type === 'tf') {
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.disabled = true;
+      if (btn.dataset.val === correctAns) btn.classList.add('correct');
+      else if (btn.dataset.selected && !isOk) btn.classList.add('wrong');
+    });
+  } else {
+    const fi = document.getElementById('fillInput');
+    fi.disabled = true;
+    fi.classList.add(isOk ? 'correct' : 'wrong');
+    if (!isOk) {
+      fi.insertAdjacentHTML('afterend', `<div class="hint-row">Correct answer: <span class="correct-ans">${correctAns}</span></div>`);
+    }
+  }
+
+  if (isOk) {
+    showFeedback('✓ Correct! 🎉', 'ok');
+  } else {
+    showFeedback(`✗ Not quite. Correct answer: <strong>${correctAns}</strong>`, 'nope');
+  }
+
+  // Show note if present
+  if (q.note) {
+    const noteEl = document.createElement('div');
+    noteEl.className = 'note-box show';
+    noteEl.innerHTML = `📖 <strong>Why?</strong> ${q.note}`;
+    document.querySelector('.question-card').appendChild(noteEl);
+  }
+
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'block';
+  document.getElementById('nextBtn').textContent =
+    currentIdx < quizQuestions.length - 1 ? 'Next →' : 'See Results 🏆';
+}
+
+function normalizeAns(s) {
+  return s.toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();
+}
+
+function showFeedback(msg, type) {
+  const fb = document.getElementById('feedbackBox');
+  fb.innerHTML = msg;
+  fb.className = `feedback-box show ${type}`;
+}
+
+function nextQuestion() {
+  currentIdx++;
+  if (currentIdx >= quizQuestions.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  RESULTS
+// ═══════════════════════════════════════════════════════
+function showResults() {
+  show('results');
+  const total = quizQuestions.length;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('resultPct').textContent = pct + '%';
+  document.getElementById('resultSub').textContent = `You got ${score} out of ${total} correct.`;
+
+  let emoji = '😢', title = 'Keep Practicing!';
+  if (pct >= 90) { emoji = '🏆'; title = 'Outstanding!'; }
+  else if (pct >= 75) { emoji = '🎉'; title = 'Great Job!'; }
+  else if (pct >= 60) { emoji = '👍'; title = 'Good Effort!'; }
+  else if (pct >= 40) { emoji = '📖'; title = 'Keep Studying!'; }
+  document.getElementById('resultEmoji').textContent = `${emoji} ${title}`;
+
+  // conic ring
+  const ring = document.getElementById('resultRing');
+  const color = pct >= 75 ? 'var(--green)' : pct >= 50 ? 'var(--accent)' : 'var(--red)';
+  ring.style.background = `conic-gradient(${color} ${pct}%, var(--border) ${pct}%)`;
+  ring.style.boxShadow = `0 0 40px ${pct >= 75 ? 'rgba(81,207,102,0.3)' : 'rgba(255,107,107,0.2)'}`;
+
+  // review
+  const rl = document.getElementById('reviewList');
+  rl.innerHTML = '';
+  answers.forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'review-item' + (a.isOk ? ' ok-item' : '');
+    div.innerHTML = `<div class="ri-q">${truncate(a.q, 90)}</div>
+      ${a.isOk
+        ? `<div class="ri-ok-label">✓ Correct: ${a.correctAns}</div>`
+        : `<div class="ri-yours">✗ Your answer: ${a.userAns || '(blank)'}</div>
+           <div class="ri-correct">✓ Correct: ${a.correctAns}</div>`}`;
+    rl.appendChild(div);
+  });
+}
+
+function truncate(str, n) {
+  return str.length > n ? str.slice(0,n) + '…' : str;
+}
+
+function toggleReview() {
+  const rl = document.getElementById('reviewList');
+  rl.style.display = rl.style.display === 'none' ? 'block' : 'none';
+}
+
+function retryQuiz() {
+  // retry same questions, reshuffled
+  quizQuestions = [...lastQuestions].sort(() => Math.random() - 0.5);
+  currentIdx = 0; score = 0; wrong = 0; answers = [];
+  show('quiz');
+  renderQuestion();
+}
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+function show(id) {
+  ['home','quiz','results'].forEach(s => {
+    document.getElementById(s).style.display = s === id ? 'block' : 'none';
+  });
+}
+
+function goHome() {
+  show('home');
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+buildHome();
+show('home');
+</script>
+</body>
+</html>
